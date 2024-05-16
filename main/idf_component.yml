@@ -5,6 +5,10 @@ dependencies:
     path: ../local_components/local__esp_lcd_st7789v
   local/gxhtc3:
     path: ../local_components/local__gxhtc3
+  local/qmc5883l:
+    path: ../local_components/local__qmc5883l
+  local/qmi8658c:
+    path: ../local_components/local__qmi8658c
   lvgl/lvgl: "==8.3.9"
   ## Required IDF version
   idf:

@@ -15,23 +15,35 @@ dependencies:
     component_hash: null
     source:
       type: idf
-    version: 5.1.2
+    version: 5.2.0
   local/esp_lcd_st7789v:
     component_hash: null
     source:
-      path: E:\esp32-project\esp32s3\idf\esp32s3-idf-watch\local_components\local__esp_lcd_st7789v
+      path: D:\project\esp32s3-idf\esp32s3-idf-watch\local_components\local__esp_lcd_st7789v
       type: local
     version: 1.0.0
   local/esp_lcd_touch_cst816s:
     component_hash: null
     source:
-      path: E:\esp32-project\esp32s3\idf\esp32s3-idf-watch\local_components\local__esp_lcd_touch_cst816s
+      path: D:\project\esp32s3-idf\esp32s3-idf-watch\local_components\local__esp_lcd_touch_cst816s
       type: local
     version: 1.0.0
   local/gxhtc3:
     component_hash: null
     source:
-      path: E:\esp32-project\esp32s3\idf\esp32s3-idf-watch\local_components\local__gxhtc3
+      path: D:\project\esp32s3-idf\esp32s3-idf-watch\local_components\local__gxhtc3
+      type: local
+    version: 1.0.0
+  local/qmc5883l:
+    component_hash: null
+    source:
+      path: D:\project\esp32s3-idf\esp32s3-idf-watch\local_components\local__qmc5883l
+      type: local
+    version: 1.0.0
+  local/qmi8658c:
+    component_hash: null
+    source:
+      path: D:\project\esp32s3-idf\esp32s3-idf-watch\local_components\local__qmi8658c
       type: local
     version: 1.0.0
   lvgl/lvgl:
@@ -40,6 +52,6 @@ dependencies:
       service_url: https://api.components.espressif.com/
       type: service
     version: 8.3.9
-manifest_hash: 55a4a1ef2bb67cab652f1ce0cad4c686d97633499661c540567b1ae03c5f87b4
+manifest_hash: a19d88a4fb28864bb0b9ad6aecacf05b6bffb3e222a46bcd4ebce48ea210d49c
 target: esp32s3
 version: 1.0.0

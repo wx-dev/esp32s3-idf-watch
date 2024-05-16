@@ -1,0 +1,5 @@
+dependencies:
+  idf:
+    version: ">=5.1.0"
+description: QMI8658C drivers
+version: 1.0.0
