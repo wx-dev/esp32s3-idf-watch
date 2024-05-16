@@ -21,6 +21,7 @@
 #include "esp_lcd_st7789v.h"
 #include "esp_lcd_touch_cst816s.h"
 #include "ui/ui.h"
+#include "../local_components/local__gxhtc3/include/gxhtc3.h"
 
 #define EXAMPLE_LCD_H_RES               (240)           /* LCD Horizontal resolution */
 #define EXAMPLE_LCD_V_RES               (280)           /* LCD Vertical resolution */

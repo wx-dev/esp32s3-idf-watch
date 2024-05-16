@@ -3,6 +3,8 @@ dependencies:
     path: ../local_components/local__esp_lcd_touch_cst816s
   local/esp_lcd_st7789v:
     path: ../local_components/local__esp_lcd_st7789v
+  local/gxhtc3:
+    path: ../local_components/local__gxhtc3
   lvgl/lvgl: "==8.3.9"
   ## Required IDF version
   idf:

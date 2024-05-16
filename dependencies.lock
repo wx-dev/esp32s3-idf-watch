@@ -28,12 +28,18 @@ dependencies:
       path: E:\esp32-project\esp32s3\idf\esp32s3-idf-watch\local_components\local__esp_lcd_touch_cst816s
       type: local
     version: 1.0.0
+  local/gxhtc3:
+    component_hash: null
+    source:
+      path: E:\esp32-project\esp32s3\idf\esp32s3-idf-watch\local_components\local__gxhtc3
+      type: local
+    version: 1.0.0
   lvgl/lvgl:
     component_hash: a0525d74dd85092059565b91030daf539a76cce82386972ffebbde67016eb730
     source:
       service_url: https://api.components.espressif.com/
       type: service
     version: 8.3.9
-manifest_hash: ff17a6d7925ef12e5d2a71be9ab3edc55a71d49c90bdb2cc59d10d3b1133ca6c
+manifest_hash: 55a4a1ef2bb67cab652f1ce0cad4c686d97633499661c540567b1ae03c5f87b4
 target: esp32s3
 version: 1.0.0
