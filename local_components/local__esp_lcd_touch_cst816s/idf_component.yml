@@ -1,0 +1,8 @@
+dependencies:
+  esp_lcd_touch:
+    public: true
+    version: ^1.0.4
+  idf:
+    version: '>=4.4.2'
+description: ESP LCD Touch CST816S - touch controller CST816S
+version: 1.0.0

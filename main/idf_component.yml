@@ -1,0 +1,9 @@
+dependencies:
+  local/esp_lcd_touch_cst816s:
+    path: ../local_components/local__esp_lcd_touch_cst816s
+  local/esp_lcd_st7789v:
+    path: ../local_components/local__esp_lcd_st7789v
+  lvgl/lvgl: "==8.3.9"
+  ## Required IDF version
+  idf:
+    version: ">=5.1.0"
