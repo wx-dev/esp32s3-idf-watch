@@ -21,6 +21,8 @@
 #include "esp_lcd_st7789v.h"
 #include "esp_lcd_touch_cst816s.h"
 #include "ui/ui.h"
+#include "qmi8658c.h"
+#include "qmc5883l.h"
 
 
 #define EXAMPLE_LCD_H_RES               (240)           /* LCD Horizontal resolution */
@@ -53,6 +55,20 @@ static char *TAG = "main";
 
 static SemaphoreHandle_t touch_mux = NULL;
 static SemaphoreHandle_t lvgl_mux = NULL;
+
+/**
+ * 姿态传感器
+ */
+t_sQMI8658C QMI8658C;
+
+/**
+ * 地磁传感器
+ */
+t_sQMC5883L QMC5883L;
+// Global variables to hold the compass reading string and direction
+int compassReading;
+char compassReadingStr[6]; // Need extra space for the degree symbol and space
+const char* direction;
 
 static bool example_notify_lvgl_flush_ready(esp_lcd_panel_io_handle_t panel_io, esp_lcd_panel_io_event_data_t *edata,
                                             void *user_ctx) {
@@ -143,6 +159,80 @@ static void example_lvgl_port_task(void *arg) {
         vTaskDelay(pdMS_TO_TICKS(task_delay_ms));
     }
 }
+// Function to update compass position based on the compass reading
+static void updateCompassPosition() {
+
+    // Ensure that compassReading stays within the range of 0 to 359 degrees
+    if (compassReading >= 360) {
+        compassReading -= 360;
+    }
+
+    // Calculate the new X position based on the compass reading
+    int newPos = 305 - (compassReading / 5) * 10; // Adjusted based on new zero location and width
+    int nextPos = 305 - ((compassReading + 5) / 5) * 10; // Adjusted based on new zero location and width
+    int newXPos = newPos + ((nextPos - newPos) * (compassReading % 5) / 5);
+
+    // Convert the compass reading to a string
+    char compassReadingStr[6]; // Need extra space for the degree symbol and space
+    sprintf(compassReadingStr, "%d°", compassReading); // Add degree symbol and space
+
+    // Update the label to display the compass reading
+    lv_label_set_text(ui_degree, compassReadingStr);
+
+    // Determine the direction based on the compass reading
+    const char *directions[] = {"N", "NE", "E", "SE", "S", "SW", "W", "NW"};
+    int sector = (compassReading + 22) / 45;
+    const char *direction = directions[sector % 8];
+
+    // Update the label to display the direction
+    lv_label_set_text(ui_direction, direction);
+
+    // Smoothly animate the transition to the new X position
+    lv_anim_t anim;
+    lv_anim_init(&anim);
+    lv_anim_set_var(&anim, ui_compass);
+    lv_anim_set_exec_cb(&anim, (lv_anim_exec_xcb_t) lv_obj_set_x);
+    lv_anim_set_values(&anim, lv_obj_get_x(ui_compass), newXPos);
+    lv_anim_set_time(&anim, 500); // Animation duration: 1000 milliseconds
+    lv_anim_set_path_cb(&anim,
+                        lv_anim_path_ease_in_out); //  lv_anim_path_linear // lv_anim_path_overshoot // lv_anim_path_bounce // lv_anim_path_ease_in_out
+    lv_anim_start(&anim);
+}
+
+/**
+ * 姿态传感器
+ * @param args
+ */
+static void qmi8658c_task(void *args) {
+    while (1) {
+        vTaskDelay(1000 / portTICK_PERIOD_MS);
+        qmi8658c_fetch_angleFromAcc(&QMI8658C);
+        ESP_LOGI(TAG, "angle_x = %.1f  angle_y = %.1f angle_z = %.1f", QMI8658C.AngleX, QMI8658C.AngleY,
+                 QMI8658C.AngleZ);
+    }
+}
+
+/**
+ * 地磁传感器
+ * @param args
+ */
+static void qmc5883l_task(void *args) {
+    while (1) {
+        vTaskDelay(1000 / portTICK_PERIOD_MS);
+        qmc5883l_fetch_azimuth(&QMC5883L);
+        compassReading=(int)QMC5883L.azimuth;
+        ESP_LOGI(TAG, "x = %.1hd  y = %.1hd z = %.1hd azimuth = %.1f",QMC5883L.mag_x,QMC5883L.mag_y,QMC5883L.mag_z,QMC5883L.azimuth);
+    }
+}
+
+static void test_task(void *args) {
+    while (1) {
+        vTaskDelay(3000 / portTICK_PERIOD_MS);
+        updateCompassPosition();
+    }
+}
+
+
 
 void app_main(void) {
     static lv_disp_draw_buf_t disp_buf;   /* Contains internal graphic buffer(s) called draw buffer(s) */
@@ -284,4 +374,16 @@ void app_main(void) {
     lvgl_mux = xSemaphoreCreateMutex();
     assert(lvgl_mux);
     xTaskCreate(example_lvgl_port_task, "LVGL", EXAMPLE_LVGL_TASK_STACK_SIZE, NULL, EXAMPLE_LVGL_TASK_PRIORITY, NULL);
+
+    //传感器初始化
+    qmi8658c_init();
+    qmc5883l_init();
+    calibrateMag();
+    //地磁传感器
+    xTaskCreate(qmc5883l_task, "qmc5883l_task", 4096, NULL, 6, NULL);
+    //姿态传感器
+    xTaskCreate(qmi8658c_task, "qmi8658c_task", 4096, NULL, 6, NULL);
+
+    xTaskCreate(test_task, "test_task", 4096, NULL, 2, NULL);
+
 }

@@ -30,6 +30,7 @@ typedef struct {
     float azimuth;
 } t_sQMC5883L;
 
+void calibrateMag(void);
 
 void qmc5883l_init(void);
 
